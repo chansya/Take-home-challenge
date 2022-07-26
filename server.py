@@ -13,8 +13,8 @@ app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
-# dummy user = Sincere@april.biz
-# Shanna@melissa.tv
+# dummy user 1= Sincere@april.biz
+# dummy user 2= Shanna@melissa.tv
 
 
 @app.route("/")
@@ -48,14 +48,12 @@ def view_search():
 
 @app.route("/search_res", methods=["POST"])
 def search_reservations():
-    """Search for available reservations."""\
+    """Search for available reservations."""
 
-    # get the form input(date, start time & end time)
     user = User.get_by_email(session.get("user_email"))
     user_id = user.user_id
-    print("HEY YOU")
-    print(user_id)
- 
+
+    # get the form input(date, start time & end time)
     input_date = datetime.strptime(request.form.get("res-date"),
                                    '%Y-%m-%d').date()
     start_time = datetime.strptime(request.form.get("start-time"),
@@ -65,18 +63,17 @@ def search_reservations():
 
     # search if user has any reservation on that day
     error = None
-    user_res = Reservation.query.filter(Reservation.user_id == user_id, Reservation.date == input_date).first()
-    print("$$$$$$$$$$$$$$$$$$$")
-    print(user_res)
+    user_res = Reservation.query.filter(Reservation.user_id == user_id, 
+                                        Reservation.date == input_date).first()
 
+    # create error message if record is found on the same day
     if user_res:
         error = "You already have a booking on this day! Please book a tasting session on another day."
 
-    # query database for existing reservations
-    res_in_db = Reservation.query.filter(
-                Reservation.date == input_date,
-                Reservation.start_time >= start_time,
-                Reservation.end_time <= end_time).all()
+    # query database for existing reservations on the chosen day
+    res_in_db = Reservation.query.filter(Reservation.date == input_date,
+                                        Reservation.start_time >= start_time,
+                                        Reservation.end_time <= end_time).all()
 
     exisitng_res = []
     for res in res_in_db:
@@ -93,7 +90,6 @@ def search_reservations():
             available_times.append(current)
         # add 30 min to the current time
         start_time = (datetime.combine(input_date, current)+ timedelta(minutes=30)).time()
-    print(error)
 
     # render templates with available slots
     return render_template("booking.html", date=input_date, error=error, 
@@ -118,7 +114,6 @@ def make_reservation():
     new_rec = Reservation.create(res_date, start_time, end_time, user_id)
     db.session.add(new_rec)
     db.session.commit()
-    print("ADDED!")
 
     flash("Your booking was made successfully.")
 
@@ -128,10 +123,10 @@ def make_reservation():
 @app.route("/view_res")
 def view_reservation():
     """Display user's reservation"""
+
     user = User.get_by_email(session.get("user_email"))
     user_id = user.user_id
-    user_res = Reservation.query.filter(
-                    Reservation.user_id==user_id).all()
+    user_res = Reservation.query.filter(Reservation.user_id==user_id).all()
 
     return render_template("user_booking.html", user_res=user_res)
 
