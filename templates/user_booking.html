@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}User Booking{% endblock %}
+
+{% block body %}
+    <ul>Existing Reservations:
+        {% for rec in user_res %}
+        <li>{{ rec.date }} :{{ rec.start_time }} - {{ rec.end_time }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/search">Go back</a>    
+
+{% endblock %}

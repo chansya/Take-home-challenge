@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+
+{% block body %}
+  <h1>Melon Reservation Scheduler <button><a href="/logout">Logout</a></button></h1>
+  <button><a href="/view_res">View Existing Bookings</a></button>
+
+  <h2>Make a new booking</h2>
+  <form action="/search_res" method="POST">
+    <div>
+        <label for="res-date">Choose a date:</label>
+        <input type="date" name="res-date" id="res-date" required>
+    </div>
+
+    <div>
+        <label for="start-time">Choose a time range to see available time slots</label>
+        <div>
+            Start time: <input type="time" name="start-time" id="start-time" step="1800" placeholder="Start time" required> 
+        </div>
+    </div>
+        End time: <input type="time" name="end-time" id="end-time"  step="1800" placeholder="End time" required> 
+    <div>
+        <button type="submit">Search</button>
+    </div>
+
+  </form>
+
+{% endblock %}
